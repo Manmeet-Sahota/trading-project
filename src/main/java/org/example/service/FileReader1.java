@@ -16,12 +16,12 @@ public class FileReader1 implements FileReaderInterface {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             String header = reader.readLine();
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/Manmeet.Singh/Student_Work/projects/trading/trades_" + fileCount + ".csv"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + fileCount + ".csv"));
             while ((line = reader.readLine()) != null) {
                 if (rowCount >= chunkSize) {
                     writer.close();
                     fileCount++;
-                    writer = new BufferedWriter(new FileWriter("/Users/Manmeet.Singh/Student_Work/projects/trading/trades_" + fileCount + ".csv"));
+                    writer = new BufferedWriter(new FileWriter("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + fileCount + ".csv"));
                     rowCount = 0;
                 }
                 writer.write(line);

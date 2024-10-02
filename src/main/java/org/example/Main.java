@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
 
         FileReader1 fr1 = new FileReader1();
-        fr1.fileReader("/Users/Manmeet.Singh/Student_Work/projects/trading/trades.csv", 1000);
+        fr1.fileReader("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trades.csv", 1000);
         System.out.println(System.currentTimeMillis());
         DataStorage dataStorage = new DataStorage();
 

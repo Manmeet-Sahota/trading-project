@@ -27,7 +27,7 @@ public class ReadThread implements Runnable {
 
         List<Trading> list = new ArrayList<>();
         try {
-            br = new BufferedReader(new FileReader("/Users/Manmeet.Singh/Student_Work/projects/trading/trades_" + i + ".csv"));
+            br = new BufferedReader(new FileReader("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + i + ".csv"));
             while ((line1 = br.readLine()) != null) {
                 String[] splitLine = line1.split(",");
                 Trading trading = new Trading();
@@ -54,8 +54,6 @@ public class ReadThread implements Runnable {
         TradePayLoad tradePayLoad = new TradePayLoad();
         System.out.println(Thread.currentThread().getName() + "########## > " + list.size());
         tradePayLoad.insertTradePayload(list);
-        getQueueData();
-
     }
 
 
