@@ -1,13 +1,31 @@
-package org.example.configuration;
+package org.example.model;
 
 public class Trading {
     private String tradeId;
     private String transactionTime;
     private String accountNumber;
+
+    @Override
+    public String toString() {
+        return "Trading{" +
+                "id='" + tradeId + '\'' +
+                "payload='" + payload + '\'' +
+                '}';
+    }
+
     private String cusip;
     private String activity;
-   private String  quantity;
-   private String price;
+    private String quantity;
+    private String price;
+    private String payload;
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
 
     public String getTradeId() {
         return tradeId;

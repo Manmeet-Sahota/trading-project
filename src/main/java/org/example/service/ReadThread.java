@@ -1,16 +1,15 @@
-package org.example.configuration;
+package org.example.service;
 
-import org.example.model.DataQueue;
+import com.google.gson.Gson;
+import org.example.storage.DataQueue;
+import org.example.model.Trading;
 import org.example.storage.DataStorage;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
 
 public class ReadThread implements Runnable {
     public ReadThread(int i) {
@@ -23,8 +22,6 @@ public class ReadThread implements Runnable {
     @Override
     public void run() {
         BufferedReader br = null;
-        System.out.println(Thread.currentThread().getName() + ".   i am in thread");
-
         List<Trading> list = new ArrayList<>();
         try {
             br = new BufferedReader(new FileReader("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + i + ".csv"));
@@ -38,6 +35,7 @@ public class ReadThread implements Runnable {
                 trading.setActivity(splitLine[4]);
                 trading.setQuantity(splitLine[5]);
                 trading.setPrice(splitLine[6]);
+                trading.setPayload(line1);
                 list.add(trading);
             }
         } catch (IOException e) {
@@ -49,35 +47,34 @@ public class ReadThread implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println(Thread.currentThread().getName() + ".    ---  > " + list.size());
-        saveDataIntoMap(list);
         TradePayLoad tradePayLoad = new TradePayLoad();
-        System.out.println(Thread.currentThread().getName() + "########## > " + list.size());
         tradePayLoad.insertTradePayload(list);
+        List<BlockingQueue<String>> blockingQueues = null;
+        try {
+            blockingQueues = saveDataIntoMap(list);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        SecurityReference securityReference = new SecurityReference();
+        securityReference.insertSecurityReference(list);
     }
 
 
-    public void saveDataIntoMap(List<Trading> list) {
+    public List<BlockingQueue<String>> saveDataIntoMap(List<Trading> list) throws InterruptedException {
         DataStorage ds = new DataStorage();
         Map<String, String> dsMap = ds.getMap();
         for (Trading td : list) {
             String value = String.valueOf((int) (Math.random() * 3) + 1);
-            dsMap.put(td.getAccountNumber(), value);
+            dsMap.put(td.getTradeId(), value);
             if (value.equals("1")) {
-                DataQueue.queue1.add(td.getAccountNumber());
+                DataQueue.setQueue1(td.getTradeId());
             } else if (value.equals("2")) {
-                DataQueue.queue2.add(td.getAccountNumber());
+                DataQueue.setQueue2(td.getTradeId());
             } else {
-                DataQueue.queue3.add(td.getAccountNumber());
+                DataQueue.setQueue3(td.getTradeId());
             }
-
         }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("----->" + dsMap.size());
+        return Arrays.asList(DataQueue.getQueue1(), DataQueue.getQueue2(), DataQueue.getQueue3());
     }
 }
 

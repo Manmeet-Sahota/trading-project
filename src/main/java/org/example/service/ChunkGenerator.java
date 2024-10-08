@@ -1,10 +1,10 @@
 package org.example.service;
 
-import org.example.configuration.ThreadPoolConfiguration;
+import org.example.configuration.ChunkProcessorThreadPool;
 
 import java.io.*;
 
-public class FileReader1 implements FileReaderInterface {
+public class ChunkGenerator implements ChunkGeneratorInterface {
     int count = 0;
     int rowCount=0;
     String line ;
@@ -34,7 +34,7 @@ public class FileReader1 implements FileReaderInterface {
         }
 
 //        call thread pool
-        ThreadPoolConfiguration tpc=new ThreadPoolConfiguration();
+        ChunkProcessorThreadPool tpc=new ChunkProcessorThreadPool();
         tpc.createThreadPool(fileCount);
 
 
