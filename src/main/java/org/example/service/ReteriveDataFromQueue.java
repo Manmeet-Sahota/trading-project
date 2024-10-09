@@ -20,9 +20,7 @@ public class ReteriveDataFromQueue {
             String tradeId = blockingQueue.poll();
             list.add(tradeId);
         }
-        List<Trading> list1 = connectivityWithDataBase.fetchTradeIds(list);
-        //
-
+//        List<Trading> list1 = connectivityWithDataBase.fetchTradeIds(list);
         return list;
     }
 

@@ -20,7 +20,7 @@ public class ChunkProcessorThreadPool {
         }
 
         try {
-            if (!es.awaitTermination(1, TimeUnit.SECONDS)) {
+            if (!es.awaitTermination(10, TimeUnit.SECONDS)) {
                 System.out.println("I waited ");
                 es.shutdownNow();
             }
@@ -31,14 +31,16 @@ public class ChunkProcessorThreadPool {
     }
 
     public void createThreadPoolToRetriveData() {
-        executor = Executors.newFixedThreadPool(3);
+        ConfigLoader configLoader=new ConfigLoader("application.properties");
+       String poolSize= configLoader.getProperty("chunkProcessorThreadPool");
+        executor = Executors.newFixedThreadPool(1);
         System.out.println("-------::::::> " + DataQueue.getQueue1());
         executor.execute(new ReadQueueData(DataQueue.getQueue1()));
         executor.execute(new ReadQueueData(DataQueue.getQueue2()));
         executor.execute(new ReadQueueData(DataQueue.getQueue3()));
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
             }
         } catch (InterruptedException e) {

@@ -6,10 +6,14 @@ import java.sql.SQLException;
 
 public class QueueConnectivity {
     private Connection connection;
+    ConfigLoader configLoader=new ConfigLoader("application.properties");
     public Connection getConnection(){
         if (connection!=null){
             try{
-                connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/Trading","root","password123");
+                String dbUrl = configLoader.getProperty("db.url");
+                String dbUsername = configLoader.getProperty("db.username");
+                String dbPassword = configLoader.getProperty("db.password");
+                connection= DriverManager.getConnection(dbUrl,dbUsername,dbPassword);
                 System.out.println("queue Connection done ");
             } catch (SQLException e) {
                 e.printStackTrace();

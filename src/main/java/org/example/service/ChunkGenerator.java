@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.configuration.ChunkProcessorThreadPool;
+import org.example.configuration.ConfigLoader;
 
 import java.io.*;
 
@@ -12,16 +13,17 @@ public class ChunkGenerator implements ChunkGeneratorInterface {
 
     @Override
     public void fileReader(String filePath, int chunkSize) {
+        ConfigLoader configLoader=new ConfigLoader("application.properties");
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             String header = reader.readLine();
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + fileCount + ".csv"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter( "trade.filePath"+ fileCount + ".csv"));
             while ((line = reader.readLine()) != null) {
                 if (rowCount >= chunkSize) {
                     writer.close();
                     fileCount++;
-                    writer = new BufferedWriter(new FileWriter("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + fileCount + ".csv"));
+                    writer = new BufferedWriter(new FileWriter("trade.filePath" + fileCount + ".csv"));
                     rowCount = 0;
                 }
                 writer.write(line);

@@ -1,20 +1,24 @@
 package org.example.configuration;
 
+
 import org.example.model.Trading;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 public class ConnectivityWithDataBase {
     private Connection connection;
 
+    private ConfigLoader configLoader=new ConfigLoader( "application.properties");
     public Connection getConnection() {
         if (connection == null) {
             try {
-                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Trading", "root", "password123");
+                String dbUrl = configLoader.getProperty("db.url");
+                String dbUsername = configLoader.getProperty("db.username");
+                String dbPassword = configLoader.getProperty("db.password");
+                connection = DriverManager.getConnection( dbUrl,dbUsername,dbPassword);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -22,6 +26,7 @@ public class ConnectivityWithDataBase {
         return connection;
     }
 
+    //
     public List<Trading> fetchTradeIds(List<String> tradeIds) throws SQLException {
         connection = getConnection();
         ResultSet resultSet = null;
@@ -31,8 +36,7 @@ public class ConnectivityWithDataBase {
             preparedStatement.setString(1, tradeId);
             resultSet = preparedStatement.executeQuery();
         }
-
-        List<Trading> list= new ArrayList<>();
+        List<Trading> list = new ArrayList<>();
         while (resultSet.next()) {
             Trading trading = new Trading();
             trading.setTradeId(resultSet.getString("trade_id"));
@@ -42,5 +46,7 @@ public class ConnectivityWithDataBase {
         }
         return list;
     }
+
 }
+
 

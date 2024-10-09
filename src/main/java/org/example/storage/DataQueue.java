@@ -19,9 +19,7 @@ public class DataQueue {
     }
 
     public static void setQueue1(String value) throws InterruptedException {
-
         DataQueue.queue1.put(value);
-
     }
 
     public static BlockingQueue<String> getQueue2() {

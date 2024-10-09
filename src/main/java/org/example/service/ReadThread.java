@@ -1,6 +1,6 @@
 package org.example.service;
 
-import com.google.gson.Gson;
+import org.example.configuration.ConfigLoader;
 import org.example.storage.DataQueue;
 import org.example.model.Trading;
 import org.example.storage.DataStorage;
@@ -23,8 +23,11 @@ public class ReadThread implements Runnable {
     public void run() {
         BufferedReader br = null;
         List<Trading> list = new ArrayList<>();
+        ConfigLoader configLoader=new ConfigLoader("application.properties");
+
         try {
-            br = new BufferedReader(new FileReader("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + i + ".csv"));
+            String fileName=configLoader.getProperty("trade.filePath");
+            br = new BufferedReader(new FileReader(fileName+i+".csv"));
             while ((line1 = br.readLine()) != null) {
                 String[] splitLine = line1.split(",");
                 Trading trading = new Trading();
