@@ -16,18 +16,8 @@
 
     <!-- https://mvnrepository.com/artifact/net.kemitix/file-reader-writer -->
     <dependencies>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
-        </dependency>
-        <!--    if we want to add dependency here , search -->
-        <dependency>
-            <groupId>net.kemitix</groupId>
-            <artifactId>file-reader-writer</artifactId>
-            <version>1.0.0</version>
-        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
