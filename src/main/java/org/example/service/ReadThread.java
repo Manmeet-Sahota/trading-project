@@ -23,11 +23,11 @@ public class ReadThread implements Runnable {
     public void run() {
         BufferedReader br = null;
         List<Trading> list = new ArrayList<>();
-        ConfigLoader configLoader=new ConfigLoader("application.properties");
+        ConfigLoader configLoader = new ConfigLoader("application.properties");
 
         try {
-            String fileName=configLoader.getProperty("trade.filePath");
-            br = new BufferedReader(new FileReader(fileName+i+".csv"));
+            String fileName = configLoader.getProperty("trade.filePath");
+            br = new BufferedReader(new FileReader(fileName + i + ".csv"));
             while ((line1 = br.readLine()) != null) {
                 String[] splitLine = line1.split(",");
                 Trading trading = new Trading();
@@ -58,6 +58,11 @@ public class ReadThread implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+
+        System.out.println("fetching data from queue");
+
+
         SecurityReference securityReference = new SecurityReference();
         securityReference.insertSecurityReference(list);
     }

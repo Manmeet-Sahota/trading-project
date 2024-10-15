@@ -38,6 +38,8 @@ public class ChunkProcessorThreadPool {
         executor.execute(new ReadQueueData(DataQueue.getQueue1()));
         executor.execute(new ReadQueueData(DataQueue.getQueue2()));
         executor.execute(new ReadQueueData(DataQueue.getQueue3()));
+
+
         executor.shutdown();
         try {
             if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {

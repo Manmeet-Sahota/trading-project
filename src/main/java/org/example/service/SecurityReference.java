@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SecurityReference {
     public void insertSecurityReference(List<Trading> tradeList) {
-        String sql = "INSERT IGNORE INTO security_reference (CUSIP) VALUES (?)";
+        String sql = "INSERT IGNORE INTO security_reference (CUSIP) VALUES   (?)";
         ConnectivityWithDataBase connectivityWithDataBase = new ConnectivityWithDataBase();
         try (Connection connection = connectivityWithDataBase.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
