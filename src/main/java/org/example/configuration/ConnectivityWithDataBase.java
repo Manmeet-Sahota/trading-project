@@ -27,19 +27,19 @@ public class ConnectivityWithDataBase {
         ResultSet resultSet = null;
         String query = "select trade_id,payload from trade_payload where trade_id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
+        List<Trading> list= new ArrayList<>();
         for (String tradeId : tradeIds) {
             preparedStatement.setString(1, tradeId);
             resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Trading trading = new Trading();
+                trading.setTradeId(resultSet.getString("trade_id"));
+                trading.setPayload(resultSet.getString("payload"));
+                list.add(trading);
+            }
         }
 
-        List<Trading> list= new ArrayList<>();
-        while (resultSet.next()) {
-            Trading trading = new Trading();
-            trading.setTradeId(resultSet.getString("trade_id"));
-            trading.setPayload(resultSet.getString("payload"));
-            list.add(trading);
-            System.out.println(trading.toString());
-        }
         return list;
     }
 }

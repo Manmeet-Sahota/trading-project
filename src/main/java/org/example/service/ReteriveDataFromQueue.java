@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.configuration.ConnectivityWithDataBase;
 import org.example.model.Trading;
+import org.example.util.Helper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,11 +24,18 @@ public class ReteriveDataFromQueue {
         List<Trading> list1 = connectivityWithDataBase.fetchTradeIds(list);
         //
 
+
+        List<Trading> fetching = Helper.fetching(list1);
+        insertTradePayload1(fetching);
+        insertIntoJournalEntry(fetching);
+        insertIntoPosition(fetching);
+
         return list;
+
     }
 
     public void insertTradePayload1(List<Trading> tradeList) {
-        String sql = "Insert into security_reference (CUSIP) VALUES(?)";
+        String sql = " INSERT IGNORE INTO security_reference (cusip) VALUES (?)";
         ConnectivityWithDataBase connectivityWithDataBase = new ConnectivityWithDataBase();
         try (Connection connection = connectivityWithDataBase.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -36,6 +44,7 @@ public class ReteriveDataFromQueue {
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();
+            System.out.println("data save in security reference table ");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,13 +71,14 @@ public class ReteriveDataFromQueue {
     }
 
     public void insertIntoPosition(List<Trading> tradeList) {
-        String sql = "Insert into positions (account,position_id) VALUES(?,?)";
+        String sql = "Insert into positions (account,quantity,created_at) VALUES(?,?,?)";
         ConnectivityWithDataBase connectivityWithDataBase = new ConnectivityWithDataBase();
         try (Connection connection = connectivityWithDataBase.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             for (Trading trade : tradeList) {
                 preparedStatement.setString(1, trade.getAccountNumber());
                 preparedStatement.setString(2,trade.getQuantity());
+                preparedStatement.setString(3,trade.getTransactionTime());
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();

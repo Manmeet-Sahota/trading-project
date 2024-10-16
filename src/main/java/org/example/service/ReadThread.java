@@ -55,8 +55,7 @@ public class ReadThread implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        SecurityReference securityReference = new SecurityReference();
-        securityReference.insertSecurityReference(list);
+
     }
 
 

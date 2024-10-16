@@ -20,7 +20,7 @@ public class ChunkProcessorThreadPool {
         }
 
         try {
-            if (!es.awaitTermination(1, TimeUnit.SECONDS)) {
+            if (!es.awaitTermination(4, TimeUnit.SECONDS)) {
                 System.out.println("I waited ");
                 es.shutdownNow();
             }
@@ -38,7 +38,7 @@ public class ChunkProcessorThreadPool {
         executor.execute(new ReadQueueData(DataQueue.getQueue3()));
         executor.shutdown();
         try {
-            if (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
+            if (!executor.awaitTermination(4, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
             }
         } catch (InterruptedException e) {

@@ -15,7 +15,7 @@ public class Trading {
 
     private String cusip;
     private String activity;
-    private String quantity;
+    private String quantity;    
     private String price;
     private String payload;
 
