@@ -49,31 +49,48 @@ public class ReadThread implements Runnable {
         }
         TradePayLoad tradePayLoad = new TradePayLoad();
         tradePayLoad.insertTradePayload(list);
-        List<BlockingQueue<String>> blockingQueues = null;
-        try {
-            blockingQueues = saveDataIntoMap(list);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+        SecurityReference securityReference= new SecurityReference();
+        securityReference.insertSecurityReference(list);
+
+        ReteriveDataFromQueue reteriveDataFromQueue=new ReteriveDataFromQueue();
+        reteriveDataFromQueue.insertIntoJournalEntry(list);
+
+        ReteriveDataFromQueue reteriveDataFromQueue1=new ReteriveDataFromQueue();
+        reteriveDataFromQueue1.insertIntoJournalEntry(list);
+        ReteriveDataFromQueue reteriveDataFromQueue2=new ReteriveDataFromQueue();
+        reteriveDataFromQueue2.insertIntoPosition(list);
+
+        TradeProducer tradeProducer = new TradeProducer();
+        tradeProducer.sendToRabbitMQ(list);
+
+
+
+//        List<BlockingQueue<String>> blockingQueues = null;
+//        try {
+//            blockingQueues = saveDataIntoMap(list);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
 
 
-    public List<BlockingQueue<String>> saveDataIntoMap(List<Trading> list) throws InterruptedException {
-        DataStorage ds = new DataStorage();
-        Map<String, String> dsMap = ds.getMap();
-        for (Trading td : list) {
-            String value = String.valueOf((int) (Math.random() * 3) + 1);
-            dsMap.put(td.getTradeId(), value);
-            if (value.equals("1")) {
-                DataQueue.setQueue1(td.getTradeId());
-            } else if (value.equals("2")) {
-                DataQueue.setQueue2(td.getTradeId());
-            } else {
-                DataQueue.setQueue3(td.getTradeId());
-            }
-        }
-        return Arrays.asList(DataQueue.getQueue1(), DataQueue.getQueue2(), DataQueue.getQueue3());
-    }
+//    public List<BlockingQueue<String>> saveDataIntoMap(List<Trading> list) throws InterruptedException {
+//        DataStorage ds = new DataStorage();
+//        Map<String, String> dsMap = ds.getMap();
+//        for (Trading td : list) {
+//            String value = String.valueOf((int) (Math.random() * 3) + 1);
+//            dsMap.put(td.getTradeId(), value);
+//            if (value.equals("1")) {
+//                DataQueue.setQueue1(td.getTradeId());
+//            } else if (value.equals("2")) {
+//                DataQueue.setQueue2(td.getTradeId());
+//            } else {
+//                DataQueue.setQueue3(td.getTradeId());
+//            }
+//        }
+//        return Arrays.asList(DataQueue.getQueue1(), DataQueue.getQueue2(), DataQueue.getQueue3());
+//    }
 }
 

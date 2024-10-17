@@ -1,6 +1,6 @@
 package org.example.configuration;
 
-import org.example.service.ReadQueueData;
+//import org.example.service.ReadQueueData;
 import org.example.service.ReadThread;
 import org.example.storage.DataQueue;
 
@@ -33,9 +33,9 @@ public class ChunkProcessorThreadPool {
     public void createThreadPoolToRetriveData() {
         executor = Executors.newFixedThreadPool(3);
         System.out.println("-------::::::> " + DataQueue.getQueue1());
-        executor.execute(new ReadQueueData(DataQueue.getQueue1()));
-        executor.execute(new ReadQueueData(DataQueue.getQueue2()));
-        executor.execute(new ReadQueueData(DataQueue.getQueue3()));
+//        executor.execute(new ReadQueueData(DataQueue.getQueue1()));
+//        executor.execute(new ReadQueueData(DataQueue.getQueue2()));
+//        executor.execute(new ReadQueueData(DataQueue.getQueue3()));
         executor.shutdown();
         try {
             if (!executor.awaitTermination(4, TimeUnit.SECONDS)) {

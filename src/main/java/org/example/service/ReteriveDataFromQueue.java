@@ -13,26 +13,24 @@ import java.util.concurrent.BlockingQueue;
 
 public class ReteriveDataFromQueue {
 
-    public List<String> readQueueData(BlockingQueue<String> blockingQueue) throws SQLException {
-        List<String> list = new ArrayList<>();
-        ConnectivityWithDataBase connectivityWithDataBase = new ConnectivityWithDataBase();
-
-        while (!blockingQueue.isEmpty()) {
-            String tradeId = blockingQueue.poll();
-            list.add(tradeId);
-        }
-        List<Trading> list1 = connectivityWithDataBase.fetchTradeIds(list);
-        //
-
-
-        List<Trading> fetching = Helper.fetching(list1);
-        insertTradePayload1(fetching);
-        insertIntoJournalEntry(fetching);
-        insertIntoPosition(fetching);
-
-        return list;
-
-    }
+//    public List<String> readQueueData(BlockingQueue<String> blockingQueue) throws SQLException {
+//        List<String> list = new ArrayList<>();
+//        ConnectivityWithDataBase connectivityWithDataBase = new ConnectivityWithDataBase();
+//
+//        while (!blockingQueue.isEmpty()) {
+//            String tradeId = blockingQueue.poll();
+//            list.add(tradeId);
+//        }
+//        List<Trading> list1 = connectivityWithDataBase.fetchTradeIds(list);
+//
+//        List<Trading> fetching = Helper.fetching(list1);
+//        insertTradePayload1(fetching);
+//        insertIntoJournalEntry(fetching);
+//        insertIntoPosition(fetching);
+//
+//        return list;
+//
+//    }
 
     public void insertTradePayload1(List<Trading> tradeList) {
         String sql = " INSERT IGNORE INTO security_reference (cusip) VALUES (?)";
@@ -48,9 +46,8 @@ public class ReteriveDataFromQueue {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
+
     public void insertIntoJournalEntry(List<Trading> tradeList) {
         String sql = "Insert into journal_entry (account,direction,quantity) VALUES(?,?,?)";
         ConnectivityWithDataBase connectivityWithDataBase = new ConnectivityWithDataBase();
@@ -66,7 +63,6 @@ public class ReteriveDataFromQueue {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
     }
 
