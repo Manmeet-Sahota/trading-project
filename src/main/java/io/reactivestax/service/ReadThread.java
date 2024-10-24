@@ -68,6 +68,76 @@
 //}
 //
 
+//package io.reactivestax.service;
+//
+//import io.reactivestax.configuration.RabbitMQConfig;
+//import io.reactivestax.entity.SecurityReference;
+//import io.reactivestax.model.TradePayLoad;
+//import io.reactivestax.model.Trading;
+//
+//import java.io.BufferedReader;
+//import java.io.FileReader;
+//import java.io.IOException;
+//import java.util.*;
+//
+//public class ReadThread implements Runnable {
+//    private int i;
+//    String line1 = null;
+//
+//    public ReadThread(int i) {
+//        this.i = i;
+//    }
+//
+//    @Override
+//    public void run() {
+//        BufferedReader br = null;
+//        List<Trading> list = new ArrayList<>();
+//        try {
+//            br = new BufferedReader(new FileReader("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + i + ".csv"));
+//            while ((line1 = br.readLine()) != null) {
+//                String[] splitLine = line1.split(",");
+//                Trading trading = new Trading();
+//                trading.setTradeId(splitLine[0]);
+//                trading.setTransactionTime(splitLine[1]);
+//                trading.setAccountNumber(splitLine[2]);
+//                trading.setCusip(splitLine[3]);
+//                trading.setActivity(splitLine[4]);
+//                trading.setQuantity(splitLine[5]);
+//                trading.setPrice(splitLine[6]);
+//                trading.setPayload(line1);
+//                list.add(trading);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (br != null) {
+//                    br.close();
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        TradePayLoad tradePayLoad = new TradePayLoad();
+//        tradePayLoad.insertTradePayload(list);
+//
+//        SecurityReference securityReference = new SecurityReference();
+//        securityReference.insertSecurityReference(list);
+//
+//        ReteriveDataFromQueue reteriveDataFromQueue = new ReteriveDataFromQueue();
+//        reteriveDataFromQueue.insertIntoJournalEntry(list);
+//
+//        // Create RabbitMQConfig instance
+//        RabbitMQConfig rabbitMQConfig = new RabbitMQConfig("localhost", 5672, "guest", "guest");
+//
+//        // Instantiate TradeProducer with the RabbitMQConfig
+//        TradeProducer tradeProducer = new TradeProducer(rabbitMQConfig);
+//        tradeProducer.sendToRabbitMQ(list);
+//    }
+//}
+
+
 package io.reactivestax.service;
 
 import io.reactivestax.configuration.RabbitMQConfig;
@@ -78,11 +148,12 @@ import io.reactivestax.model.Trading;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReadThread implements Runnable {
-    private int i;
-    String line1 = null;
+    private final int i; // Use final for thread safety
+    private String line1;
 
     public ReadThread(int i) {
         this.i = i;
@@ -90,10 +161,8 @@ public class ReadThread implements Runnable {
 
     @Override
     public void run() {
-        BufferedReader br = null;
         List<Trading> list = new ArrayList<>();
-        try {
-            br = new BufferedReader(new FileReader("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + i + ".csv"));
+        try (BufferedReader br = new BufferedReader(new FileReader("/Users/Manmeet.Singh/Student_Work/projects/trading-project/src/main/resources/trade_" + i + ".csv"))) {
             while ((line1 = br.readLine()) != null) {
                 String[] splitLine = line1.split(",");
                 Trading trading = new Trading();
@@ -108,17 +177,10 @@ public class ReadThread implements Runnable {
                 list.add(trading);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.err.println("Error reading file: " + e.getMessage());
         }
 
+        // Insert trade payloads and security references
         TradePayLoad tradePayLoad = new TradePayLoad();
         tradePayLoad.insertTradePayload(list);
 
@@ -129,10 +191,16 @@ public class ReadThread implements Runnable {
         reteriveDataFromQueue.insertIntoJournalEntry(list);
 
         // Create RabbitMQConfig instance
-        RabbitMQConfig rabbitMQConfig = new RabbitMQConfig("localhost", 5672, "guest", "guest");
+        RabbitMQConfig rabbitMQConfig;
+        try {
+            rabbitMQConfig = new RabbitMQConfig("src/main/resources/rabbitmq.properties");
+        } catch (IOException e) {
+            System.err.println("Error loading RabbitMQ configuration: " + e.getMessage());
+            return; // Exit if the config cannot be loaded
+        }
 
         // Instantiate TradeProducer with the RabbitMQConfig
-        TradeProducer tradeProducer = new TradeProducer(rabbitMQConfig);
-        tradeProducer.sendToRabbitMQ(list);
+//        TradeProducer tradeProducer = new TradeProducer(rabbitMQConfig);
+//        tradeProducer.sendToRabbitMQ(list);
     }
 }
